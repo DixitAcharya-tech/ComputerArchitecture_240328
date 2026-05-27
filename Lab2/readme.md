@@ -1,4 +1,4 @@
-# Lab 1: Getting Started with VHDL and Simulation Tools
+# Lab 2: VHDL Code for Realizing Logic Gates
 
 ## Course Information
 
@@ -10,207 +10,302 @@
 
 ---
 
-# Aim
+# Objective
 
-- To install and configure the VHDL simulation environment using VS Code, GHDL, and GTKWave.
-- To understand the basic structure of a VHDL program.
-- To design and simulate a simple digital circuit using VHDL.
-
----
-
-# Introduction
-
-## Overview of VHDL
-
-VHDL (Very High Speed Integrated Circuit Hardware Description Language) is a hardware description language used to model and simulate digital electronic systems. It allows engineers to describe the behavior and structure of digital circuits before implementing them in hardware.
-
-Unlike traditional programming languages that execute instructions one after another, VHDL supports concurrent execution, making it suitable for hardware design where multiple operations occur simultaneously.
+- To write VHDL code for basic logic gates: AND, OR, NOT, NAND, NOR, XOR, and XNOR.
+- To simulate each logic gate using GHDL.
+- To verify the truth table outputs using GTKWave waveform analysis.
 
 ---
 
-# Basic Components of a VHDL Program
+# Theory
 
-A standard VHDL design mainly consists of the following sections:
+Logic gates are the fundamental building blocks of digital circuits. Each logic gate performs a specific Boolean operation on one or more binary inputs to produce a binary output.
 
-| Component | Purpose |
-|-----------|---------|
-| **Library Declaration** | Imports predefined packages and data types |
-| **Entity** | Defines the input and output ports of the circuit |
-| **Architecture** | Describes the internal operation or logic |
+## Logic Gate Operations
 
----
-
-# Libraries Used
-
-The IEEE library is commonly used in VHDL programs because it provides standard logic data types.
-
-```vhdl
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
-```
-
-### Description
-
-- `STD_LOGIC_1164` provides the `std_logic` data type.
-- `NUMERIC_STD` supports arithmetic operations on vectors.
+| Gate | VHDL Operator | Boolean Expression |
+|------|---------------|-------------------|
+| AND | `and` | Y = A · B |
+| OR | `or` | Y = A + B |
+| NOT | `not` | Y = A̅ |
+| NAND | `nand` | Y = (A · B)̅ |
+| NOR | `nor` | Y = (A + B)̅ |
+| XOR | `xor` | Y = A ⊕ B |
+| XNOR | `xnor` | Y = (A ⊕ B)̅ |
 
 ---
 
-# Entity Declaration
+# VHDL Programs
 
-The entity block specifies the external interface of the design.
+## AND Gate
 
-### Port Modes
-
-| Mode | Description |
-|------|-------------|
-| `in` | Input signal |
-| `out` | Output signal |
-| `inout` | Bidirectional signal |
-
----
-
-# Architecture Styles in VHDL
-
-VHDL supports multiple design approaches:
-
-| Style | Explanation |
-|-------|-------------|
-| **Behavioral** | Describes circuit behavior using processes |
-| **Dataflow** | Uses concurrent signal assignment statements |
-| **Structural** | Connects smaller submodules together |
-
-For this experiment, the **Dataflow model** is used.
-
----
-
-# Common Data Types
-
-- **std_logic** → Represents a single digital signal.
-- **std_logic_vector** → Represents multiple bits grouped together.
-
-Example:
-
-```vhdl
-signal data_bus : std_logic_vector(7 downto 0);
-```
-
----
-
-# VHDL Simulation Procedure
-
-The VHDL development process generally includes:
-
-1. Writing the VHDL source code
-2. Compiling the design
-3. Elaborating the testbench
-4. Running simulation
-5. Viewing waveforms using GTKWave
-
----
-
-# GHDL Commands
-
-```bash
-# Compile source and testbench
-ghdl -a buffer.vhd buffer_tb.vhd
-
-# Elaborate testbench
-ghdl -e buffer_tb
-
-# Run simulation and generate VCD file
-ghdl -r buffer_tb --vcd=simulation.vcd
-
-# Open waveform viewer
-gtkwave simulation.vcd
-```
-
----
-
-# Design Description
-
-## File: `buffer.vhd`
-
-The design implements a simple buffer circuit where the output directly copies the input signal. The circuit is modeled using concurrent signal assignment.
-
-### VHDL Code
+### File: `and_gate.vhd`
 
 ```vhdl
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity BUFFER_GATE is
+entity AND_GATE is
     port (
-        A : in  std_logic;
+        A : in std_logic;
+        B : in std_logic;
         Y : out std_logic
     );
-end entity BUFFER_GATE;
+end entity AND_GATE;
 
-architecture Dataflow of BUFFER_GATE is
+architecture Dataflow of AND_GATE is
 begin
-    Y <= A;
+    Y <= A and B;
 end architecture Dataflow;
 ```
 
 ---
 
-# Testbench Description
+## OR Gate
 
-## File: `buffer_tb.vhd`
-
-The testbench verifies the functionality of the buffer circuit by applying different input values at regular time intervals.
-
-### Testbench Code
+### File: `or_gate.vhd`
 
 ```vhdl
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity buffer_tb is
-end entity buffer_tb;
+entity OR_GATE is
+    port (
+        A : in std_logic;
+        B : in std_logic;
+        Y : out std_logic
+    );
+end entity OR_GATE;
 
-architecture testbench of buffer_tb is
-
-    signal tb_A : std_logic := '0';
-    signal tb_Y : std_logic;
-
+architecture Dataflow of OR_GATE is
 begin
-
-    uut: entity work.BUFFER_GATE
-        port map (
-            A => tb_A,
-            Y => tb_Y
-        );
-
-    stimulus: process
-    begin
-        tb_A <= '0';
-        wait for 10 ns;
-
-        tb_A <= '1';
-        wait for 10 ns;
-
-        tb_A <= '0';
-        wait for 10 ns;
-
-        wait;
-    end process;
-
-end architecture testbench;
+    Y <= A or B;
+end architecture Dataflow;
 ```
 
 ---
 
-# Applied Inputs
+## NOT Gate
 
-| Time | Input (`tb_A`) |
-|------|----------------|
-| 0 ns | `'0'` |
-| 10 ns | `'1'` |
-| 20 ns | `'0'` |
+### File: `not_gate.vhd`
 
-The output signal `tb_Y` is observed to confirm correct operation.
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity NOT_GATE is
+    port (
+        A : in std_logic;
+        Y : out std_logic
+    );
+end entity NOT_GATE;
+
+architecture Dataflow of NOT_GATE is
+begin
+    Y <= not A;
+end architecture Dataflow;
+```
+
+---
+
+## NAND Gate
+
+### File: `nand_gate.vhd`
+
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity NAND_GATE is
+    port (
+        A : in std_logic;
+        B : in std_logic;
+        Y : out std_logic
+    );
+end entity NAND_GATE;
+
+architecture Dataflow of NAND_GATE is
+begin
+    Y <= A nand B;
+end architecture Dataflow;
+```
+
+---
+
+## NOR Gate
+
+### File: `nor_gate.vhd`
+
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity NOR_GATE is
+    port (
+        A : in std_logic;
+        B : in std_logic;
+        Y : out std_logic
+    );
+end entity NOR_GATE;
+
+architecture Dataflow of NOR_GATE is
+begin
+    Y <= A nor B;
+end architecture Dataflow;
+```
+
+---
+
+## XOR Gate
+
+### File: `xor_gate.vhd`
+
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity XOR_GATE is
+    port (
+        A : in std_logic;
+        B : in std_logic;
+        Y : out std_logic
+    );
+end entity XOR_GATE;
+
+architecture Dataflow of XOR_GATE is
+begin
+    Y <= A xor B;
+end architecture Dataflow;
+```
+
+---
+
+## XNOR Gate
+
+### File: `xnor_gate.vhd`
+
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity XNOR_GATE is
+    port (
+        A : in std_logic;
+        B : in std_logic;
+        Y : out std_logic
+    );
+end entity XNOR_GATE;
+
+architecture Dataflow of XNOR_GATE is
+begin
+    Y <= A xnor B;
+end architecture Dataflow;
+```
+
+---
+
+# Combined Testbench
+
+## File: `gates_tb.vhd`
+
+A single testbench is used to test all logic gates simultaneously.
+
+```vhdl
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity GATES_TB is
+end entity GATES_TB;
+
+architecture Simulation of GATES_TB is
+
+    signal A, B : std_logic := '0';
+
+    signal Y_AND, Y_OR : std_logic;
+    signal Y_NAND, Y_NOR : std_logic;
+    signal Y_XOR, Y_XNOR : std_logic;
+    signal Y_NOT : std_logic;
+
+begin
+
+    U1 : entity work.AND_GATE
+        port map (A, B, Y_AND);
+
+    U2 : entity work.OR_GATE
+        port map (A, B, Y_OR);
+
+    U3 : entity work.NOT_GATE
+        port map (A, Y_NOT);
+
+    U4 : entity work.NAND_GATE
+        port map (A, B, Y_NAND);
+
+    U5 : entity work.NOR_GATE
+        port map (A, B, Y_NOR);
+
+    U6 : entity work.XOR_GATE
+        port map (A, B, Y_XOR);
+
+    U7 : entity work.XNOR_GATE
+        port map (A, B, Y_XNOR);
+
+    STIMULUS : process
+    begin
+
+        A <= '0';
+        B <= '0';
+        wait for 10 ns;
+
+        A <= '0';
+        B <= '1';
+        wait for 10 ns;
+
+        A <= '1';
+        B <= '0';
+        wait for 10 ns;
+
+        A <= '1';
+        B <= '1';
+        wait for 10 ns;
+
+        wait;
+
+    end process;
+
+end architecture Simulation;
+```
+
+---
+
+# Simulation Procedure
+
+## GHDL Commands
+
+```bash
+# Analyze all VHDL files
+ghdl -a and_gate.vhd or_gate.vhd not_gate.vhd nand_gate.vhd nor_gate.vhd xor_gate.vhd xnor_gate.vhd gates_tb.vhd
+
+# Elaborate testbench
+ghdl -e GATES_TB
+
+# Run simulation and generate VCD file
+ghdl -r GATES_TB --vcd=simulation.vcd
+
+# Open waveform in GTKWave
+gtkwave simulation.vcd
+```
+
+---
+
+# Expected Truth Table
+
+| A | B | AND | OR | NOT A | NAND | NOR | XOR | XNOR |
+|---|---|-----|----|--------|------|-----|-----|------|
+| 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 |
+| 0 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 0 |
+| 1 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+| 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 |
 
 ---
 
@@ -218,15 +313,17 @@ The output signal `tb_Y` is observed to confirm correct operation.
 
 ## File: `simulation.vcd`
 
-The simulation generates a VCD (Value Change Dump) file which stores all signal transitions during execution. This file is viewed in GTKWave for waveform analysis.
+The generated waveform verifies the operation of all logic gates according to the expected truth table.
 
-## Simulation Waveform
+## GTKWave Output
 
 ![Simulation Waveform](image.png)
 
-### Result
+---
 
-The waveform shows that the output signal changes exactly according to the input signal, verifying the correct operation of the buffer circuit.
+# Result
+
+All logic gates were successfully implemented and simulated using VHDL. The outputs observed in GTKWave matched the expected truth table values.
 
 ---
 
@@ -234,12 +331,12 @@ The waveform shows that the output signal changes exactly according to the input
 
 | Tool | Purpose |
 |------|---------|
-| **VS Code** | Writing and editing VHDL code |
-| **GHDL** | Compiling and simulating VHDL programs |
+| **VS Code** | Writing and editing VHDL programs |
+| **GHDL** | Compilation and simulation |
 | **GTKWave** | Viewing waveform output |
 
 ---
 
 # Conclusion
 
-In this laboratory exercise, the VHDL development environment was successfully configured using VS Code, GHDL, and GTKWave. A simple buffer circuit was designed and simulated using the Dataflow modeling style. The compilation, elaboration, and simulation processes were completed successfully. The waveform generated in GTKWave verified that the output followed the input correctly. This experiment provided a basic understanding of the VHDL design flow and simulation process.
+In this laboratory experiment, VHDL code for basic logic gates including AND, OR, NOT, NAND, NOR, XOR, and XNOR gates was successfully implemented using the Dataflow modeling style. A combined testbench was used to verify the operation of all gates. The simulation was performed using GHDL, and the resulting waveforms were analyzed using GTKWave. The observed outputs matched the expected truth table values, confirming the correct functionality of each logic gate.
