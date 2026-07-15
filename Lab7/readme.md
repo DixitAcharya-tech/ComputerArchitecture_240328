@@ -1,10 +1,10 @@
 # Lab 7: VHDL Code for Sequential Circuits — Flip-Flops
 
-**Course:** Computer Architecture (CMP 262)
-**Program:** Bachelor of Computer Engineering
-**Semester:** Fourth Semester
-**College:** Cosmos College of Management and Technology
-**Department:** Department of Information and Communication Technology
+* **Course:** Computer Architecture (CMP 262)
+* **Program:** Bachelor of Computer Engineering
+* **Semester:** Fourth Semester
+* **College:** Cosmos College of Management and Technology
+* **Department:** Information and Communication Technology
 
 ---
 
